@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ITGarden</string>
+    <string name="icon_menu1">กิจกรรม</string>
+    <string name="menu2">พันธุ์พืช</string>
+    <string name="menu3">สภาพแวดล้อม</string>
+    <string name="Head1">หัวข้อ</string>
+</resources>
