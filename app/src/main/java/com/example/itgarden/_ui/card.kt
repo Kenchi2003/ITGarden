@@ -1,6 +1,5 @@
 package com.example.itgarden._ui
 
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,11 +7,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,8 +39,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.example.itgarden.R
 import com.example.itgarden.ui.theme.ITGardenTheme
-import java.io.InputStream
-import java.net.URL
 
 
 @Composable
@@ -112,31 +111,42 @@ fun ButtomBar(HomeOnClick: () -> Unit,SettingOnClick: () -> Unit){
         Modifier
             .fillMaxWidth(1f)
             .padding(all = 8.dp)
-            .clickable(onClick = HomeOnClick)
             .background(Color(0xffFFFFFF)),
         verticalAlignment = Alignment.CenterVertically
 
     ) {
-        Image(painter = painterResource(id = R.drawable.iconbuttom1),
-            contentDescription = null,
-            Modifier
-                .size(width = 45.dp, height = 48.dp)
-                .fillMaxWidth(1f)
-        )
+        Column (modifier= Modifier
+            .height(40.dp)
+            .clickable(onClick = SettingOnClick),
+            horizontalAlignment = Alignment.Start)
+        {
+            Image(painter = painterResource(id = R.drawable.iconbuttom1),
+                contentDescription = null,
+                Modifier
+                    .size(width = 45.dp, height = 48.dp)
+                    .fillMaxWidth(1f)
+                    .clickable(onClick = HomeOnClick)
+            )
+        }
+        Column (modifier= Modifier
+            .height(40.dp)
+            .clickable(onClick = SettingOnClick)
+            .fillMaxWidth(),
+            horizontalAlignment = Alignment.End){
+            Image(painter = painterResource(id = R.drawable.iconbuttom2),
+                contentDescription = null,
+                modifier= Modifier
+                    .height(40.dp)
+                    .width(40.dp)
+                    .clickable(onClick = SettingOnClick)
+            )
+        }
 
-        Image(painter = painterResource(id = R.drawable.iconbuttom2),
-            contentDescription = null,
-            modifier= Modifier
-                .height(40.dp)
-                .clickable(onClick = SettingOnClick)
-                .fillMaxWidth(),
-            alignment = Alignment.CenterEnd
-        )
     }
 }
 
 @Composable
-fun ContentUI(modifier: Modifier=Modifier, text:String, image: Int){
+fun ContentUI(modifier: Modifier=Modifier, head:String, text:String, image: String){
     Column (
         modifier
             .shadow(
@@ -152,14 +162,25 @@ fun ContentUI(modifier: Modifier=Modifier, text:String, image: Int){
                 shape = RoundedCornerShape(size = 10.dp)
             )
     ){
-        Image(painter = painterResource(id = R.drawable.icon_menu1),
-            contentDescription = null,modifier.padding(bottom = 8.dp))
-
-        Text(text = "กิจกรรม",
-            fontSize = 24.sp,modifier = Modifier.padding(10.dp)
+        Image(
+            painter = rememberImagePainter(
+                data = image, // ใส่ URL ของรูปภาพที่คุณต้องการแสดง
+                builder = {
+                    crossfade(true) // เพื่อทำให้การเปลี่ยนรูปภาพมีการ crossfade
+                }
+            ),
+            contentDescription = "Description for screen readers",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .padding(8.dp),
+            contentScale = ContentScale.Fit
         )
-        Text(text = "",
-            modifier = Modifier.padding(10.dp)
+        Text(text = head,
+            fontSize = 24.sp,modifier = Modifier.padding(2.dp)
+        )
+        Text(text = text,
+            modifier = Modifier.padding(2.dp)
         )
     }
 }
@@ -167,18 +188,16 @@ fun ContentUI(modifier: Modifier=Modifier, text:String, image: Int){
 @Preview(showBackground = true)
 @Composable
 fun viewtopbar() {
-
+    val mData = "https://i.postimg.cc/j2NRfmGk/icon-menu1.jpg"
     ITGardenTheme {
         Column (modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)){
-            AsyncImage(
-                model = "https://example.com/image.jpg",
-                contentDescription = "Translated description of what the image contains"
-            )
+            .fillMaxWidth()){
+            ContentUI(head = "aksnfjh", text = "Test Test Test Test Test Test Test", image = mData)
+
         }
     }
 }
+
 
 
 @Preview(showBackground = true)
@@ -186,9 +205,8 @@ fun viewtopbar() {
 fun viewmenu() {
     ITGardenTheme {
         Row {
-            MenuIcon(stringResource(R.string.icon_menu1),R.drawable.icon_menu1,onClick = {})
-            MenuIcon(stringResource(R.string.menu2),R.drawable.menu2,onClick = {})
-            MenuIcon(stringResource(R.string.menu3),R.drawable.menu3,onClick = {})
+            ButtomBar(HomeOnClick = { /*TODO*/ }) {
+            }
         }
     }
 }
