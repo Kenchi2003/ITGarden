@@ -15,13 +15,6 @@ import com.example.itgarden.ui.theme.ITGardenTheme
 @Composable
 fun ActMenuIcon(modifier: Modifier=Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-//        Text(text = stringResource(id = R.string.Head1),
-//            style = TextStyle(
-//                fontSize = 24.sp,
-//                shadow = Shadow(Color(0xFF000000))
-//            ),
-//            modifier = Modifier.padding(start = 10.dp)
-//        )
         Row {
             MenuIcon(stringResource(R.string.icon_menu1),
                 R.drawable.icon_menu1,

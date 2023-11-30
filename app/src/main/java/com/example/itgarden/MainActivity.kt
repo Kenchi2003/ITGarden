@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.itgarden._ui.ActMenuIcon
 import com.example.itgarden._ui.ButtomBar
+import com.example.itgarden._ui.IconUA
 import com.example.itgarden._ui.MyTopAppBar
 import com.example.itgarden._ui.mPageLogin
 
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApp()
+            MyApp2()
         }
     }
 }
@@ -43,6 +44,32 @@ fun MyApp(modifier: Modifier = Modifier) {
         }
     }
 }
+
+
+@Composable
+fun MyApp2(modifier: Modifier = Modifier) {
+    var mUser by remember { mutableStateOf(false) }
+    var mAdmin by remember { mutableStateOf(false) }
+    Surface(modifier) {
+        Column {
+            IconUA(Image = R.drawable.icon,
+                Text = "For User", onClick = {mUser = true})
+
+            IconUA(Image = R.drawable.icon,
+                Text = "For Admin", onClick = {mAdmin = true})
+
+        }
+        if (mAdmin){
+            MyApp()
+        }
+        if (mUser){
+            GreetingPreview()
+        }
+    }
+}
+
+
+
 
 @Preview(showBackground = true)
 @Composable

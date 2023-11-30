@@ -17,8 +17,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -37,9 +42,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.example.itgarden.GreetingPreview
+import com.example.itgarden.MyApp
 import com.example.itgarden.R
 import com.example.itgarden.ui.theme.ITGardenTheme
 
+
+@Composable
+fun IconUA(Image:Int,Text:String,onClick: () -> Unit){
+    Column (modifier = Modifier
+        .height(350.dp)
+        .padding(bottom = 20.dp)
+        .background(
+            Color(0xffF2EEF3),
+            shape = RoundedCornerShape(size = 10.dp)
+        )
+        .clickable { onClick() }
+        .shadow(
+            elevation = 5.dp,
+            clip = true,
+            shape = RectangleShape,
+            ambientColor = Color(0xff000000),
+            spotColor = Color(0xff000000)
+        ),
+        horizontalAlignment = Alignment.CenterHorizontally)
+    {
+        Image(painter = painterResource(id = Image),
+            contentDescription = null,
+            modifier = Modifier.fillMaxWidth().height(250.dp))
+        Text(text = Text, style = TextStyle(fontSize = 32.sp))
+    }
+}
 
 @Composable
 fun MyTopAppBar(modifier:Modifier=Modifier){
@@ -198,15 +231,20 @@ fun viewtopbar() {
     }
 }
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun viewmenu() {
-    ITGardenTheme {
-        Row {
-            ButtomBar(HomeOnClick = { /*TODO*/ }) {
-            }
+
+    Surface (
+        modifier = Modifier.fillMaxSize(),
+    ){
+        Column (modifier = Modifier
+            .padding(20.dp)
+            .fillMaxWidth()
+            .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center){
+
         }
     }
 }
