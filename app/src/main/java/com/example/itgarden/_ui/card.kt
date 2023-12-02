@@ -10,27 +10,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -42,35 +36,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import com.example.itgarden.GreetingPreview
-import com.example.itgarden.MyApp
 import com.example.itgarden.R
-import com.example.itgarden.ui.theme.ITGardenTheme
 
 
 @Composable
-fun IconUA(Image:Int,Text:String,onClick: () -> Unit){
+fun IconUA(Image:Int,onClick: () -> Unit){
     Column (modifier = Modifier
-        .height(350.dp)
+        .height(250.dp)
         .padding(bottom = 20.dp)
-        .background(
-            Color(0xffF2EEF3),
-            shape = RoundedCornerShape(size = 10.dp)
-        )
-        .clickable { onClick() }
         .shadow(
-            elevation = 5.dp,
+            elevation = 10.dp,
             clip = true,
             shape = RectangleShape,
-            ambientColor = Color(0xff000000),
+            ambientColor = Color(0xffFFFFFF),
             spotColor = Color(0xff000000)
+        )
+        .graphicsLayer(shape = RoundedCornerShape(8.dp))
+        .clip(RoundedCornerShape(8.dp))
+        .clickable { onClick() }
+        .background(
+            Color(0xFFFFFFFF),
+            shape = RoundedCornerShape(size = 18.dp)
         ),
-        horizontalAlignment = Alignment.CenterHorizontally)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center)
     {
         Image(painter = painterResource(id = Image),
             contentDescription = null,
-            modifier = Modifier.fillMaxWidth().height(250.dp))
-        Text(text = Text, style = TextStyle(fontSize = 32.sp))
+            modifier = Modifier
+                .width(250.dp)
+                .height(300.dp)
+                .clip(RoundedCornerShape(16.dp))
+        )
     }
 }
 
@@ -101,15 +98,14 @@ fun MyTopAppBar(modifier:Modifier=Modifier){
             textAlign = TextAlign.Center
         )
     }
-
 }
 
 @Composable
 fun MenuIcon(content: String,image:Int,onClick: () -> Unit){
     Column (modifier = Modifier
         .padding(4.dp)
-        .widthIn(60.dp, 100.dp)
-        .heightIn(120.dp, 150.dp),
+        .width(100.dp)
+        .height(150.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally){
 
@@ -125,7 +121,7 @@ fun MenuIcon(content: String,image:Int,onClick: () -> Unit){
                     ambientColor = Color(0xff000000),
                     spotColor = Color(0xff000000)
                 )
-                .size(90.dp)
+                .size(65.dp)
                 .border(width = 2.dp, color = Color.Black, shape = CircleShape)
                 .clip(CircleShape)
                 .clickable(onClick = onClick)
@@ -139,49 +135,40 @@ fun MenuIcon(content: String,image:Int,onClick: () -> Unit){
 }
 
 @Composable
-fun ButtomBar(HomeOnClick: () -> Unit,SettingOnClick: () -> Unit){
-    Row (
-        Modifier
-            .fillMaxWidth(1f)
-            .padding(all = 8.dp)
-            .background(Color(0xffFFFFFF)),
-        verticalAlignment = Alignment.CenterVertically
+fun SettingIcon(onClick: () -> Unit){
+    Image(painter = painterResource(
+        id = R.drawable.iconbuttom2),
+        contentDescription = null,
+        modifier = Modifier
+            .size(32.dp)
+            .clickable(onClick = onClick)
+    )
+}
 
-    ) {
-        Column (modifier= Modifier
-            .height(40.dp)
-            .clickable(onClick = SettingOnClick),
-            horizontalAlignment = Alignment.Start)
-        {
-            Image(painter = painterResource(id = R.drawable.iconbuttom1),
-                contentDescription = null,
-                Modifier
-                    .size(width = 45.dp, height = 48.dp)
-                    .fillMaxWidth(1f)
-                    .clickable(onClick = HomeOnClick)
-            )
-        }
-        Column (modifier= Modifier
-            .height(40.dp)
-            .clickable(onClick = SettingOnClick)
-            .fillMaxWidth(),
-            horizontalAlignment = Alignment.End){
-            Image(painter = painterResource(id = R.drawable.iconbuttom2),
-                contentDescription = null,
-                modifier= Modifier
-                    .height(40.dp)
-                    .width(40.dp)
-                    .clickable(onClick = SettingOnClick)
-            )
-        }
 
-    }
+@Composable
+fun HomeIcon(onClick: () -> Unit){
+    Image(painter = painterResource(
+        id = R.drawable.iconbuttom1),
+        contentDescription = null,
+        modifier = Modifier
+            .size(32.dp)
+            .clickable(onClick = onClick)
+    )
 }
 
 @Composable
-fun ContentUI(modifier: Modifier=Modifier, head:String, text:String, image: String){
+fun ContentUI(
+    head: String?,
+    text: String?,
+    image: String?,
+    onClickUIContent: () -> Unit,
+    notthing: () -> Unit
+){
     Column (
-        modifier
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable { onClickUIContent()}
             .shadow(
                 elevation = 8.dp,
                 clip = true,
@@ -189,7 +176,6 @@ fun ContentUI(modifier: Modifier=Modifier, head:String, text:String, image: Stri
                 ambientColor = Color(0xff000000),
                 spotColor = Color(0xff000000)
             )
-            .padding(4.dp)
             .background(
                 Color(0xffF2EEF3),
                 shape = RoundedCornerShape(size = 10.dp)
@@ -209,27 +195,36 @@ fun ContentUI(modifier: Modifier=Modifier, head:String, text:String, image: Stri
                 .padding(8.dp),
             contentScale = ContentScale.Fit
         )
-        Text(text = head,
-            fontSize = 24.sp,modifier = Modifier.padding(2.dp)
-        )
-        Text(text = text,
-            modifier = Modifier.padding(2.dp)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun viewtopbar() {
-    val mData = "https://i.postimg.cc/j2NRfmGk/icon-menu1.jpg"
-    ITGardenTheme {
-        Column (modifier = Modifier
-            .fillMaxWidth()){
-            ContentUI(head = "aksnfjh", text = "Test Test Test Test Test Test Test", image = mData)
-
+        if (head != null) {
+            Text(text = head,
+                fontSize = 24.sp,modifier = Modifier.padding(start = 5.dp)
+            )
+        }
+        if (text != null) {
+            Text(text = text,fontSize = 16.sp,
+                modifier = Modifier.padding(start = 30.dp, bottom = 8.dp)
+            )
         }
     }
 }
+
+//@Preview(showBackground = true)
+//@Composable
+//fun ViewContents() {
+//    val mData = "https://i.postimg.cc/j2NRfmGk/icon-menu1.jpg"
+//    ITGardenTheme {
+//        Column (modifier = Modifier
+//            .fillMaxWidth()){
+//            ContentUI(head = "aksnfjh",
+//                text = "Test Test Test Test Test Test Test " +
+//                        "Test Test Test Test Test Test Test" +
+//                    "Test Test Test Test Test Test Test",
+//                image = mData,
+//                onClick = {})
+//
+//        }
+//    }
+//}
 
 @Preview(showBackground = true)
 @Composable
@@ -244,6 +239,7 @@ fun viewmenu() {
             .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center){
+
 
         }
     }
