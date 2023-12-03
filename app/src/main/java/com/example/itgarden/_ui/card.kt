@@ -1,5 +1,8 @@
 package com.example.itgarden._ui
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -161,23 +168,26 @@ fun HomeIcon(onClick: () -> Unit){
 fun ContentUI(
     head: String?,
     text: String?,
-    image: String?,
-    onClickUIContent: () -> Unit,
-    notthing: () -> Unit
-){
+    image: String?)
+{ var expanded by remember { mutableStateOf(false) }
     Column (
         modifier = Modifier
             .padding(8.dp)
-            .clickable { onClickUIContent()}
-            .shadow(
+            .fillMaxWidth().shadow(
                 elevation = 8.dp,
                 clip = true,
                 shape = RectangleShape,
-                ambientColor = Color(0xff000000),
-                spotColor = Color(0xff000000)
+                ambientColor = Color(0xFF000000),
+                spotColor = Color(0xFF000000)
             )
-            .background(
-                Color(0xffF2EEF3),
+            .clickable { expanded = !expanded }
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            ).background(
+                Color(0xFFFFFFFF),
                 shape = RoundedCornerShape(size = 10.dp)
             )
     ){
@@ -188,11 +198,11 @@ fun ContentUI(
                     crossfade(true) // เพื่อทำให้การเปลี่ยนรูปภาพมีการ crossfade
                 }
             ),
-            contentDescription = "Description for screen readers",
+            contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(250.dp)
-                .padding(8.dp),
+                .padding(4.dp),
             contentScale = ContentScale.Fit
         )
         if (head != null) {
@@ -200,10 +210,12 @@ fun ContentUI(
                 fontSize = 24.sp,modifier = Modifier.padding(start = 5.dp)
             )
         }
-        if (text != null) {
-            Text(text = text,fontSize = 16.sp,
-                modifier = Modifier.padding(start = 30.dp, bottom = 8.dp)
-            )
+        if (expanded) {
+            if (text != null) {
+                Text(text = text,fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 30.dp, bottom = 8.dp)
+                )
+            }
         }
     }
 }
@@ -229,7 +241,6 @@ fun ContentUI(
 @Preview(showBackground = true)
 @Composable
 fun viewmenu() {
-
     Surface (
         modifier = Modifier.fillMaxSize(),
     ){

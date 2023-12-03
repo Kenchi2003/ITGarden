@@ -44,15 +44,8 @@ fun ShowContent(list:List<ModelingContent>){
             items(list){item ->
                 ContentUI(head = item.HeadText,
                     text = item.BodyText,
-                    image = item.UrlImage,
-                    onClickUIContent = {
-                        if (item.UrlImage == null){
-                            Log.d("User111","iten Null")
-                        } else{
-                            Log.d("User111",item.UrlImage)
-                        }}) {
-
-                }
+                    image = item.UrlImage
+                )
             }
         }
     }
