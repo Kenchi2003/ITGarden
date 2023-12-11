@@ -70,5 +70,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:1.4.0")
     implementation ("com.google.code.gson:gson:2.8.8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-RC")
+    implementation ("com.squareup.retrofit2:converter-gson:2.5.0")
+
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
+
 
 }

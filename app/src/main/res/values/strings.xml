@@ -4,4 +4,7 @@
     <string name="menu2">พันธุ์พืช</string>
     <string name="menu3">สภาพแวดล้อม</string>
     <string name="Head1">หัวข้อ</string>
+    <string name="PushTree">จัดการข้อมูลพันธุ์พืช</string>
+    <string name="PushActivity">จัดการข้อมูลกิจกรรม</string>
+    <string name="PushEnvironment">จัดการข้อมูลสภาพแวดล้อม</string>
 </resources>

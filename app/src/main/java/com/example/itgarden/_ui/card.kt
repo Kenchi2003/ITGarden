@@ -172,8 +172,9 @@ fun ContentUI(
 { var expanded by remember { mutableStateOf(false) }
     Column (
         modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth().shadow(
+            .padding(4.dp)
+            .width(300.dp)
+            .shadow(
                 elevation = 8.dp,
                 clip = true,
                 shape = RectangleShape,
@@ -200,14 +201,14 @@ fun ContentUI(
             ),
             contentDescription = null,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
+                .width(300.dp)
+                .height(190.dp)
                 .padding(4.dp),
             contentScale = ContentScale.Fit
         )
         if (head != null) {
             Text(text = head,
-                fontSize = 24.sp,modifier = Modifier.padding(start = 5.dp)
+                fontSize = 18.sp,modifier = Modifier.padding(start = 5.dp)
             )
         }
         if (expanded) {
@@ -219,24 +220,6 @@ fun ContentUI(
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun ViewContents() {
-//    val mData = "https://i.postimg.cc/j2NRfmGk/icon-menu1.jpg"
-//    ITGardenTheme {
-//        Column (modifier = Modifier
-//            .fillMaxWidth()){
-//            ContentUI(head = "aksnfjh",
-//                text = "Test Test Test Test Test Test Test " +
-//                        "Test Test Test Test Test Test Test" +
-//                    "Test Test Test Test Test Test Test",
-//                image = mData,
-//                onClick = {})
-//
-//        }
-//    }
-//}
 
 @Preview(showBackground = true)
 @Composable
