@@ -111,8 +111,7 @@ fun MyTopAppBar(modifier:Modifier=Modifier){
 fun MenuIcon(content: String,image:Int,onClick: () -> Unit){
     Column (modifier = Modifier
         .padding(4.dp)
-        .width(100.dp)
-        .height(150.dp),
+        .width(100.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally){
 
@@ -122,7 +121,7 @@ fun MenuIcon(content: String,image:Int,onClick: () -> Unit){
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .shadow(
-                    elevation = 15.dp,
+                    elevation = 8.dp,
                     clip = true,
                     shape = CircleShape,
                     ambientColor = Color(0xff000000),

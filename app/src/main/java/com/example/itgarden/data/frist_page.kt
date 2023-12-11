@@ -10,7 +10,7 @@ data class ModelingTree(
     var id:Int,
     var TreeID:Int,
     var UrlImage:String,
-    var Name:String,
+    var TreeName:String,
     var SicName:String,
     var Benefit:String,
     var TakeCare:String

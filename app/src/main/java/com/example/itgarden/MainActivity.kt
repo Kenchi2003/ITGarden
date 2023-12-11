@@ -1,6 +1,8 @@
 package com.example.itgarden
 
 import android.os.Bundle
+import android.widget.ImageButton
+import android.widget.ScrollView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -12,6 +14,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -27,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.itgarden._ui.ActMenuIcon
 import com.example.itgarden._ui.CardEnvi
 import com.example.itgarden._ui.CardInputActivity
@@ -38,9 +45,12 @@ import com.example.itgarden._ui.IconUA
 import com.example.itgarden._ui.MyTopAppBar
 import com.example.itgarden._ui.SettingIcon
 import com.example.itgarden._ui.ShowContent
+import com.example.itgarden._ui.ShowContentTree
 import com.example.itgarden._ui.fetchDataFromJson
+import com.example.itgarden._ui.fetchDataTreeFromJson
 import com.example.itgarden._ui.mPageLogin
 import com.example.itgarden.data.ModelingContent
+import com.example.itgarden.data.ModelingTree
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -127,12 +137,25 @@ fun GerAPI():List<ModelingContent>{
         }
     }
     return dataList
+}
 
+@Composable
+fun TreeAPI():List<ModelingTree>{
+    val jsonUrl = "https://656afaa9dac3630cf72786e1.mockapi.io/TreeDATA"
+    var dataList by remember { mutableStateOf<List<ModelingTree>>(emptyList())}
+
+    LaunchedEffect(key1 = jsonUrl) {
+        dataList = withContext(Dispatchers.IO) {
+            fetchDataTreeFromJson(jsonUrl)
+        }
+    }
+    return dataList
 }
 
 @Composable
 fun GreetingPreview() {
     val dataList = GerAPI()
+    val dataListTree = TreeAPI()
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -140,21 +163,32 @@ fun GreetingPreview() {
         Column (modifier = Modifier
             .padding(bottom = 60.dp)
             .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally){
+            horizontalAlignment = Alignment.CenterHorizontally) {
             MyTopAppBar(modifier = Modifier.fillMaxWidth(1f))
 
             ActMenuIcon(modifier = Modifier.fillMaxWidth(1f))
-            Text(text = "กิจกรรมล่าสุด")
-            ShowContent(list = dataList)
 
-
-        }
-        Column(modifier = Modifier, verticalArrangement = Arrangement.Bottom) {
-            ButtomBar()
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(16.dp)
+            ) {
+                item {
+                    Text("กิจกรรมล่าสุด", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    ShowContent(list = dataList)
+                }
+                item {
+                    Text("ต้นไม้ที่น่าสนใจ", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    ShowContentTree(list = dataListTree)
+                }
+            }
+            Column(modifier = Modifier, verticalArrangement = Arrangement.Bottom) {
+                ButtomBar()
+            }
         }
     }
 }
-
 
 @Composable
 fun ButtomBar(){
