@@ -1,14 +1,18 @@
 package com.example.itgarden._ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -21,6 +25,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,9 +42,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.itgarden.MainActivity
 import com.example.itgarden.R
 import com.example.itgarden.data.ModelingContent
+import com.example.itgarden.data.ModelingEnvi
+import com.example.itgarden.data.ModelingTree
 import com.example.itgarden.data.addNewData
+import com.example.itgarden.data.addNewEnviData
+import com.example.itgarden.data.addNewTreeData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -96,67 +107,86 @@ fun mPageLogin(onContinueClicked: () -> Unit){
 }
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun CardInputTree(onClickedCancle: () -> Unit){
+fun CardInputTree(onClickedCancle: () -> Unit,onClickSuss:()->Unit){
+    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
+    var bSent by remember { mutableStateOf(false) }
+    val listItemDropDown = listOf("ไม้ยืนต้น", "ไม้เรื้อย", "ไม้ประดับ", "ไม้สงวน")
+    val ListfortextField = listOf("ลิงก์รูปภาพ","รหัสประจำต้น","ชื่อต้นไม้", "ชื่อวิทยาศาสตร์", "ประโยชน์/สรรพคุณ", "การดูแล","คุณลักษณะ")
 
-    var mTreeName by remember { mutableStateOf(TextFieldValue("")) }
-    var mTreeID by remember { mutableStateOf(TextFieldValue("")) }
-    var mSicName by remember { mutableStateOf(TextFieldValue("")) }
-    var mBenefit by remember { mutableStateOf(TextFieldValue("")) }
-    var mTakeCare by remember { mutableStateOf(TextFieldValue("")) }
-    val ListfortextField = listOf("รหัสประจำต้น","ชื่อต้นไม้", "ชื่อวิทยาศาสตร์", "ประโยชน์/สรรพคุณ", "การดูแล")
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        Column (modifier = Modifier.padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally){
-            Image(painter = painterResource(id = R.drawable.icon), contentDescription = null)
-            var TreeID = myTextFieldEditor(value = ListfortextField[0])
-            var TreeName = myTextFieldEditor(value = ListfortextField[1])
-            var SicName = myTextFieldEditor(value = ListfortextField[2])
-            var Benefit = myTextFieldEditor(value = ListfortextField[3])
-            var TakeCare = myTextFieldEditor(value = ListfortextField[4])
-            Row (modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center){
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(start = 8.dp, top = 8.dp, bottom = 60.dp)
+        ) {
+            item {
 
-                Button(onClick = { /*TODO*/ }, modifier = Modifier.padding(10.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Green,
-                        contentColor = Color.Black
-                    )) {
-                    Text(text = "ส่งข้อมูล")
+                var ImageUrl = myTextFieldEditor(value = ListfortextField[0])
+                var TreeID = myTextFieldEditor(value = ListfortextField[1])
+                var TreeName = myTextFieldEditor(value = ListfortextField[2])
+                var SicName = myTextFieldEditor(value = ListfortextField[3])
+                val Type = DropDownButton("ประเภทต้นไม้",listItemDropDown)
+                var Benefit = myTextFieldEditor(value = ListfortextField[4])
+                var TakeCare = myTextFieldEditor(value = ListfortextField[5])
+                var attbuit = myTextFieldEditor(value = ListfortextField[6])
+
+                var newData = ModelingTree("0", TreeID, ImageUrl, TreeName, SicName, Type, Benefit, TakeCare, attbuit)
+                Row (modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center){
+
+                    Button(onClick = { bSent = true }, modifier = Modifier.padding(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Green,
+                            contentColor = Color.Black
+                        )) { Text(text = "ส่งข้อมูล") }
+                if(bSent){
+                    CoroutineScope(Dispatchers.IO).launch {
+                        // ทำงานที่เกี่ยวข้องกับเครือข่าย
+                        addNewTreeData(newData)
+                        bSent = false
+                    }
+
+                    Log.d("TestAPI", newData.toString())
+                    Toast.makeText(context, "ส่งข้อมูลสำเร็จ", Toast.LENGTH_SHORT).show()
+                    onClickSuss()
                 }
-                OutlinedButton(onClick = { showDialog = true},modifier = Modifier.padding(10.dp)) {
-                    Text(text = "ยกเลิก")
-                }
-                if (showDialog){
-                    AlertDialog(onDismissRequest = { showDialog = false },
-                        title = {
-                            Text(text = "คุณแน่ใจหรือไม่")
-                        },
-                        text = {
-                            Text(text = "ยืนยันว่าจะยกเลิกหรือไม่?")
-                        },
-                        confirmButton = {
-                            Button(
-                                onClick = {
-                                    showDialog = false
-                                    onClickedCancle()
+                    OutlinedButton(onClick = { showDialog = true},modifier = Modifier.padding(10.dp)) {
+                        Text(text = "ยกเลิก")
+                    }
+                    if (showDialog){
+                        AlertDialog(onDismissRequest = { showDialog = false },
+                            title = {
+                                Text(text = "คุณแน่ใจหรือไม่")
+                            },
+                            text = {
+                                Text(text = "ยืนยันว่าจะยกเลิกหรือไม่?")
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        showDialog = false
+                                        onClickedCancle()
+                                    }
+                                ) {
+                                    Text("ยืนยัน")
                                 }
-                            ) {
-                                Text("ยืนยัน")
+                            },
+                            dismissButton = {
+                                Button(
+                                    onClick = { showDialog = false }
+                                ) {
+                                    Text("ปฏิเสธ")
+                                }
                             }
-                        },
-                        dismissButton = {
-                            Button(
-                                onClick = { showDialog = false }
-                            ) {
-                                Text("ปฏิเสธ")
-                            }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -166,9 +196,11 @@ fun CardInputTree(onClickedCancle: () -> Unit){
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun CardInputActivity(onClickedCancle: () -> Unit){
+fun CardInputActivity(onClickedCancle: () -> Unit,onClickSuss:()->Unit){
+
     var showDialog by remember { mutableStateOf(false) }
     var bSent by remember { mutableStateOf(false) }
+    val listItemDropDown = listOf("ทำความสะอาด", "ปลูกต้นไม้", "ดูแลต้นไม้", "อื่นๆ")
     val ListfortextField = listOf("Image","ชื่อกิจกรรม", "เนื้อหา")
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -177,15 +209,17 @@ fun CardInputActivity(onClickedCancle: () -> Unit){
         Column (modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally){
             Image(painter = painterResource(id = R.drawable.icon), contentDescription = null)
-            val ImageUrl = myTextFieldEditor(value = ListfortextField[0])
-            val TextHead = myTextFieldEditor(value = ListfortextField[1])
-            val TextBody = myTextFieldEditor(value = ListfortextField[2])
+            val UrlImage = myTextFieldEditor(value = ListfortextField[0])
+            val HeadText = myTextFieldEditor(value = ListfortextField[1])
+            val BodyText = myTextFieldEditor(value = ListfortextField[2])
+            val ActType = DropDownButton("ประเภทกิจกรรม",listItemDropDown)
 
             val newData = ModelingContent(
                 "0",
-                ImageUrl,
-                TextHead,
-                TextBody
+                UrlImage,
+                HeadText,
+                BodyText,
+                ActType
             )
 
             Row (
@@ -206,8 +240,8 @@ fun CardInputActivity(onClickedCancle: () -> Unit){
                             // ทำงานที่เกี่ยวข้องกับเครือข่าย
                             addNewData(newData)
                         }
-
                         Log.d("TestAPI", newData.toString())
+                        onClickSuss()
                     }
                 }
                 }
@@ -248,45 +282,13 @@ fun CardInputActivity(onClickedCancle: () -> Unit){
     }
 }
 
-//@Composable
-//fun DialogConfirm(onClickedY:()->Unit,onClickedN:()->Unit){
-//    Column(modifier = Modifier
-//        .fillMaxWidth()
-//        .background(
-//            color = Color.White,
-//            shape = RoundedCornerShape(size = 10.dp)
-//        )
-//        .padding(start = 20.dp, end = 20.dp),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally)
-//    {
-//        Text(text = "ยืนยันว่าจะยกเลิกหรือไม่?", fontSize = 32.sp ,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 120.dp))
-//        Row {
-//            Button(onClick = { onClickedY() },
-//                modifier = Modifier.padding(10.dp),
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = Color.Green,
-//                    contentColor = Color.Black
-//                )) {
-//                Text(text = "ยืนยัน")
-//            }
-//            OutlinedButton(onClick = { onClickedN() },
-//                modifier = Modifier.padding(10.dp)) {
-//                Text(text = "ไม่")
-//            }
-//        }
-//
-//    }
-//}
-
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun CardEnvi(onClickedCancle: () -> Unit){
+fun CardEnvi(onClickedCancle: () -> Unit,onClickSuss:()->Unit){
     var showDialog by remember { mutableStateOf(false) }
-    var mImageUrl by remember { mutableStateOf(TextFieldValue("")) }
-    val ListfortextField = listOf("ลักษณะสภาพแวดล้อม")
+    var bSent by remember { mutableStateOf(false) }
+
+    val ListfortextField = listOf("ลักษณะสภาพแวดล้อม","ลิงก์รูปภาพ")
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -294,16 +296,31 @@ fun CardEnvi(onClickedCancle: () -> Unit){
         Column (modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally){
             Image(painter = painterResource(id = R.drawable.icon), contentDescription = null)
-            var ImageUrl = myTextFieldEditor(value = ListfortextField[0])
+            val ImageURL = myTextFieldEditor(value = ListfortextField[1])
+            val Envi = myTextFieldEditor(value = ListfortextField[0])
             Row (modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center){
 
-                Button(onClick = {  }, modifier = Modifier.padding(10.dp),
+                var newData = ModelingEnvi(
+                    "0",
+                    Envi,
+                    ImageURL
+                )
+                Button(onClick = { bSent = true }, modifier = Modifier.padding(10.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Green,
                         contentColor = Color.Black
                     )) {
                     Text(text = "ส่งข้อมูล")
+                    if(bSent){
+                        CoroutineScope(Dispatchers.IO).launch {
+                            // ทำงานที่เกี่ยวข้องกับเครือข่าย
+                            addNewEnviData(newData)
+                        }
+
+                        Log.d("TestAPI", newData.toString())
+                        onClickSuss()
+                    }
                 }
                 OutlinedButton(onClick = { showDialog = true },modifier = Modifier.padding(10.dp)) {
                     Text(text = "ยกเลิก")
@@ -353,50 +370,5 @@ fun myTextFieldEditor(value:String):String{
     )
     return TextbyME.text
 }
-//
-//@Composable
-//fun SentData(myData: List<ModelingContent>) {
-//    var result by remember { mutableStateOf<String?>(null) }
-//
-//    LaunchedEffect(Unit) {
-//        val apiService = RetrofitClient.apiService
-//        val call = apiService.postDataActivity(myData)
-//
-//        call.enqueue(object : Callback<ResponseBody> {
-//            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-//                if (response.isSuccessful) {
-//                    result = "Success: ${response.body()?.string()}"
-//                    Log.d("TestAPI",result.toString())
-//                } else {
-//                    result = "Error: ${response.errorBody()?.string()}"
-//                    Log.e("TestAPI",result.toString())
-//                }
-//            }
-//            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-//                result = "Error: ${t.localizedMessage}"
-//                Log.e("TestAPI",result.toString())
-//            }
-//        })
-//
-//    }
-//
-//    Image(painter = painterResource(id = R.drawable.sucsses), contentDescription = null)
-//}
 
-//@Preview
-//@Composable
-//fun YourComposeScreenPreview() {
-//    YourComposeScreen()
-//}
 
-@Preview
-@Composable
-fun mp(){
-    CardInputTree(onClickedCancle = {})
-}
-
-@Preview
-@Composable
-fun mpt(){
-    CardInputActivity(onClickedCancle = {})
-}

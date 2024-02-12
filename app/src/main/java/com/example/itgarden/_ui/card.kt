@@ -18,6 +18,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -142,13 +146,11 @@ fun MenuIcon(content: String,image:Int,onClick: () -> Unit){
 
 @Composable
 fun SettingIcon(onClick: () -> Unit){
-    Image(painter = painterResource(
-        id = R.drawable.iconbuttom2),
-        contentDescription = null,
-        modifier = Modifier
+    IconButton(onClick = { onClick()}) {
+        Icon(imageVector = Icons.Filled.ArrowBack,contentDescription = null, modifier = Modifier
             .size(32.dp)
-            .clickable(onClick = onClick)
-    )
+        )
+    }
 }
 
 
@@ -186,7 +188,8 @@ fun ContentUI(
                     dampingRatio = Spring.DampingRatioMediumBouncy,
                     stiffness = Spring.StiffnessLow
                 )
-            ).background(
+            )
+            .background(
                 Color(0xFFFFFFFF),
                 shape = RoundedCornerShape(size = 10.dp)
             )
@@ -220,19 +223,174 @@ fun ContentUI(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun viewmenu() {
-    Surface (
-        modifier = Modifier.fillMaxSize(),
+fun ShowTreeDetail(mimage:String,
+                   mTreeID:String,
+                   mName: String,
+                   mSicName: String,
+                   mtype:String,
+                   mAttri:String,
+                   mBenifile: String,
+                   mTakeCare: String
+){
+    var expanded by remember { mutableStateOf(false)
+    }
+    Column (modifier = Modifier
+        .padding(4.dp)
+        .width(300.dp)
+        .shadow(
+            elevation = 8.dp,
+            clip = true,
+            shape = RectangleShape,
+            ambientColor = Color(0xFF000000),
+            spotColor = Color(0xFF000000)
+        )
+        .clickable { expanded = !expanded }
+        .animateContentSize(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessLow
+            )
+        )
+        .background(
+            Color(0xFFFFFFFF),
+            shape = RoundedCornerShape(size = 10.dp)
+        )
     ){
+        Image(painter = rememberImagePainter(
+            data = mimage, // ใส่ URL ของรูปภาพที่คุณต้องการแสดง
+            builder = {
+                crossfade(true) // เพื่อทำให้การเปลี่ยนรูปภาพมีการ crossfade
+            }
+        ),
+            contentDescription = null,
+            modifier = Modifier
+                .width(300.dp)
+                .height(190.dp)
+                .padding(4.dp),
+            contentScale = ContentScale.Fit
+        )
         Column (modifier = Modifier
-            .padding(20.dp)
-            .fillMaxWidth()
-            .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center){
+            .padding(8.dp)
+            .fillMaxWidth(),
+            horizontalAlignment = Alignment.Start){
+            Text(text = "ชื่อ: $mName", fontSize = 24.sp)
+            if(expanded){
+                Text(text = "รหัสประจำต้น: $mTreeID", fontSize = 16.sp)
+                Text(text = "ชื่อวิทยาศาสตร์: $mSicName", fontSize = 16.sp)
+                Text(text = "ประเภท: $mtype", fontSize = 16.sp)
+                Text(text = "คุณลักษณะ: $mAttri", fontSize = 16.sp)
+                Text(text = "ประโยชน์: $mBenifile \n", fontSize = 16.sp)
+                Text(text = "การดูแล: $mTakeCare \n", fontSize = 16.sp)
+            }
 
+        }
+    }
+}
+
+
+@Composable
+fun ShowActDetail(
+    mimage:String,
+    mName:String,
+    mBody:String,
+    mType:String){
+    var expanded by remember { mutableStateOf(false) }
+    Column (
+        modifier = Modifier
+            .padding(4.dp)
+            .width(300.dp)
+            .shadow(
+                elevation = 8.dp,
+                clip = true,
+                shape = RectangleShape,
+                ambientColor = Color(0xFF000000),
+                spotColor = Color(0xFF000000)
+            )
+            .clickable { expanded = !expanded }
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+            .background(
+                Color(0xFFFFFFFF),
+                shape = RoundedCornerShape(size = 10.dp)
+            )
+    ){
+        Image(painter = rememberImagePainter(
+            data = mimage, // ใส่ URL ของรูปภาพที่คุณต้องการแสดง
+            builder = {
+                crossfade(true) // เพื่อทำให้การเปลี่ยนรูปภาพมีการ crossfade
+            }
+        ),
+            contentDescription = null,
+            modifier = Modifier
+                .width(300.dp)
+                .height(190.dp)
+                .padding(4.dp),
+            contentScale = ContentScale.Fit
+        )
+        Column (modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
+            horizontalAlignment = Alignment.Start){
+            Text(text = "ชื่อกิจกรรม: $mName", fontSize = 24.sp)
+            if (expanded){
+                Text(text = "รายละเอียด: $mBody", fontSize = 16.sp)
+                Text(text = "ประเภท: $mType", fontSize = 16.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun ShowEnviDetail(
+    mimage:String,
+    mBody:String){
+    var expanded by remember { mutableStateOf(false) }
+    Column (
+        modifier = Modifier
+            .padding(4.dp)
+            .width(300.dp)
+            .shadow(
+                elevation = 8.dp,
+                clip = true,
+                shape = RectangleShape,
+                ambientColor = Color(0xFF000000),
+                spotColor = Color(0xFF000000)
+            )
+            .clickable { expanded = !expanded }
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+            .background(
+                Color(0xFFFFFFFF),
+                shape = RoundedCornerShape(size = 10.dp)
+            )
+    ){
+        Image(painter = rememberImagePainter(
+            data = mimage, // ใส่ URL ของรูปภาพที่คุณต้องการแสดง
+            builder = {
+                crossfade(true) // เพื่อทำให้การเปลี่ยนรูปภาพมีการ crossfade
+            }
+        ),
+            contentDescription = null,
+            modifier = Modifier
+                .width(300.dp)
+                .height(190.dp)
+                .padding(4.dp),
+            contentScale = ContentScale.Fit
+        )
+        Column (modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
+            horizontalAlignment = Alignment.Start){
+            Text(text = "รายละเอียด: $mBody", fontSize = 16.sp)
 
         }
     }

@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">ITGarden</string>
     <string name="icon_menu1">กิจกรรม</string>
-    <string name="menu2">พันธุ์พืช</string>
+    <string name="menu2">พืชพันธ์ุ</string>
     <string name="menu3">สภาพแวดล้อม</string>
     <string name="Head1">หัวข้อ</string>
-    <string name="PushTree">จัดการข้อมูลพันธุ์พืช</string>
-    <string name="PushActivity">จัดการข้อมูลกิจกรรม</string>
-    <string name="PushEnvironment">จัดการข้อมูลสภาพแวดล้อม</string>
+    <string name="PushTree">เพิ่มข้อมูลพืชพันธุ์</string>
+    <string name="PushActivity">เพิ่มข้อมูลกิจกรรม</string>
+    <string name="PushEnvironment">เพิ่มข้อมูลสภาพแวดล้อม</string>
 </resources>

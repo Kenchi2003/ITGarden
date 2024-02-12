@@ -1,8 +1,7 @@
 package com.example.itgarden
 
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.ScrollView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -15,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -30,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,16 +38,21 @@ import com.example.itgarden._ui.ActMenuIcon
 import com.example.itgarden._ui.CardEnvi
 import com.example.itgarden._ui.CardInputActivity
 import com.example.itgarden._ui.CardInputTree
+import com.example.itgarden._ui.DetailAct
+import com.example.itgarden._ui.DetailEnvi
+import com.example.itgarden._ui.DetailTree
 import com.example.itgarden._ui.HomeIcon
 import com.example.itgarden._ui.IconUA
 import com.example.itgarden._ui.MyTopAppBar
 import com.example.itgarden._ui.SettingIcon
 import com.example.itgarden._ui.ShowContent
 import com.example.itgarden._ui.ShowContentTree
+import com.example.itgarden._ui.fetchDataEnviFromJson
 import com.example.itgarden._ui.fetchDataFromJson
 import com.example.itgarden._ui.fetchDataTreeFromJson
 import com.example.itgarden._ui.mPageLogin
 import com.example.itgarden.data.ModelingContent
+import com.example.itgarden.data.ModelingEnvi
 import com.example.itgarden.data.ModelingTree
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -83,18 +86,34 @@ fun MyApp(modifier: Modifier = Modifier) {
         if (pushTree){
             CardInputTree(onClickedCancle = {
                 shouldShow = false
-                pushTree = false})
+                pushTree = false},
+                onClickSuss = {
+                    shouldShow = false
+                    pushTree = false
+                })
         }
         if (pushAct){
             CardInputActivity(onClickedCancle = {
                 shouldShow = false
-            pushAct = false})
+            pushAct = false},
+                onClickSuss = {
+                    shouldShow = false
+                    pushAct = false
+                })
         }
         if (pushEnvi){
             CardEnvi(onClickedCancle = {
                 shouldShow = false
-                pushEnvi = false})
+                pushEnvi = false},
+                onClickSuss = {
+                    shouldShow = false
+                    pushEnvi = false
+                })
         }
+        Column(verticalArrangement = Arrangement.Bottom) {
+            ButtomBarAdmin()
+        }
+
     }
 }
 
@@ -153,37 +172,84 @@ fun TreeAPI():List<ModelingTree>{
 }
 
 @Composable
+fun EnviAPI():List<ModelingEnvi>{
+    val jsonUrl = "https://65706ff809586eff6641613c.mockapi.io/Environment"
+    var dataList by remember { mutableStateOf<List<ModelingEnvi>>(emptyList())}
+
+    LaunchedEffect(key1 = jsonUrl) {
+        dataList = withContext(Dispatchers.IO) {
+            fetchDataEnviFromJson(jsonUrl)
+        }
+    }
+    return dataList
+}
+
+@Composable
 fun GreetingPreview() {
+    val context = LocalContext.current
+    var Activity by remember { mutableStateOf(false) }
+    var Tree by remember { mutableStateOf(false) }
+    var Envi by remember { mutableStateOf(false) }
     val dataList = GerAPI()
     val dataListTree = TreeAPI()
+    val dataListEnvi = EnviAPI()
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
         Column (modifier = Modifier
-            .padding(bottom = 60.dp)
-            .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top) {
+
             MyTopAppBar(modifier = Modifier.fillMaxWidth(1f))
 
-            ActMenuIcon(modifier = Modifier.fillMaxWidth(1f))
+            ActMenuIcon(modifier = Modifier.fillMaxWidth(1f),
+                onClickAct = {
+                    Activity = !Activity
+                    Tree = false
+                    Envi = false
+                             },
+                onClickTree = {
+                    Tree = !Tree
+                    Activity = false
+                    Envi = false
+                              },
+                onClickEnvi = {
+                    Envi = !Envi
+                    Activity = false
+                    Tree = false})
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(16.dp)
-            ) {
-                item {
-                    Text("กิจกรรมล่าสุด", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                    ShowContent(list = dataList)
-                }
-                item {
-                    Text("ต้นไม้ที่น่าสนใจ", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                    ShowContentTree(list = dataListTree)
+            if (Activity == false && Tree == false && Envi == false){
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                        .padding(start = 8.dp, top = 8.dp, bottom = 60.dp)
+                ) {
+                    item {
+                        Text("กิจกรรมล่าสุด", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        ShowContent(list = dataList)
+                    }
+                    item {
+                        Text("ต้นไม้ที่น่าสนใจ", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        ShowContentTree(list = dataListTree)
+                    }
                 }
             }
-            Column(modifier = Modifier, verticalArrangement = Arrangement.Bottom) {
+            if (Activity){
+                DetailAct(list = dataList)
+            }
+            if (Tree){
+                DetailTree(list = dataListTree)
+            }
+            if (Envi){
+                DetailEnvi(list = dataListEnvi)
+            }
+            }
+
+        if (Activity == false && Tree == false && Envi == false){
+            Column(verticalArrangement = Arrangement.Bottom) {
                 ButtomBar()
             }
         }
@@ -216,12 +282,44 @@ fun ButtomBar(){
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Bottom){
                 SettingIcon (onClick = { PSetting = true } )
-
             }
-
         }
         if (PHome){
             GreetingPreview()
+        }
+        if (PSetting){
+            MyApp2()
+        }
+    }
+}
+
+@Composable
+fun ButtomBarAdmin(){
+    var PHome by remember { mutableStateOf(false) }
+    var PSetting by remember { mutableStateOf(false) }
+    Surface {
+        Row (
+            Modifier
+                .fillMaxWidth(1f)
+                .padding(all = 8.dp)
+                .background(Color(0xffFFFFFF)),
+            verticalAlignment = Alignment.CenterVertically
+
+        ) {
+            Column (modifier= Modifier
+                .height(40.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Bottom)
+            {
+
+            }
+            Column (modifier= Modifier
+                .height(40.dp)
+                .fillMaxWidth(),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Bottom){
+                SettingIcon (onClick = { PSetting = true } )
+            }
         }
         if (PSetting){
             MyApp2()
